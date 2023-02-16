@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title Login
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    h1 Login
+    form(method='POST' action='/login')
+      div 
+        label(for='username') User name: 
+        input(type='text' placeholder='username' name='username' required='true' )
+      div 
+        label(for='password') Password: 
+        input(type='password' name='password' required='true' )        
+      button(type='submit') Log in
+    if errors
+      ul   
+        for error in errors 
+          li=error

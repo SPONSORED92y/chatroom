@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    title Sign up
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    h1 Sign up
+    form(method='POST' action='/sign_up')
+      div 
+        label(for='username') User name: 
+        input(type='text' placeholder='username' name='username' required='true' )
+      div 
+        label(for='password') Password: 
+        input(type='password' name='password' required='true' )        
+      button(type='submit') Sign up
+    if errors
+      ul   
+        for error in errors 
+          li=error
