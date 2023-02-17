@@ -8,10 +8,10 @@ html
     h1 Chat
     div(class='chat_body')  
     form(method='POST' action='/chat')
-      div 
+      div(class="message_container")
         ul
           each message in Message_list
-            li=message.content
+            div(class="message")=message.content
       input(type='text' placeholder='say something...' name='message' required='true' )
       button(type='submit' class='send_button') send
         

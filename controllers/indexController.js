@@ -3,6 +3,7 @@ const User = require("../models/user");
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 const Message = require("../models/message");
+var login_user = "";
 
 exports.index = (req, res) => {
     res.render("index");
@@ -13,7 +14,6 @@ exports.login_get = (req, res) => {
 };
 
 exports.login_get_failed = (req, res) => {
-    //const errors = ["incorrect username or password"];
     res.render("login", { errors: ["incorrect username or password"] });
 };
 
@@ -57,18 +57,22 @@ exports.logout = (req, res, next) => {
     });
 };
 
-exports.chat = function(req, res,next) {
-Message.find()
-//.sort([["time","ascending"]])
-.exec(function(err,list_Message){
-    if(err){
-        return next(err);
-    }
-    //Successful, so render
-    res.render("chat",{
-        Message_list:list_Message,
-    });
-});
+exports.chat = function (req, res, next) {
+    Message.find()
+        //.sort([["time","ascending"]])
+        .exec(function (err, list_Message) {
+            if (err) {
+                return next(err);
+            }
+            //Successful, so render
+            //TODO: use async to chain req.user.username
+            console.log("log in as");
+            console.log(req.user.username);
+            res.render("chat", {
+                User: req.user,
+                Message_list: list_Message,
+            });
+        });
 };
 
 exports.chat_post = [
