@@ -6,13 +6,19 @@ html
     script(src='/javascripts/chat.js')
   body
     h1 Chat
-    div(class='chat_body')  
-    form(method='POST' action='/chat')
+    if User
+      h4=User.username
       div(class="message_container")
-        ul
-          each message in Message_list
-            div(class="message")=message.content
-      input(type='text' placeholder='say something...' name='message' required='true' )
-      button(type='submit' class='send_button') send
-        
-    a(href='/logout') Log out
+        each message in Message_list
+          div
+            div(class="speaker")=message.owner
+            div(class="time")=message.time
+          div(class="message")=message.content
+      form(method='POST' action='/chat')
+        input(type='text' placeholder='say something...' name='message' required='true' )
+        input(type='hidden' name="owner" value=User.username)
+        button(type='submit' class='send_button') send
+      a(href='/logout') Log out
+    else 
+      h4 Not log-in
+      a(href='/login') Log in

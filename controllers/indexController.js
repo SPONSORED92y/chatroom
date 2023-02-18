@@ -3,7 +3,8 @@ const User = require("../models/user");
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 const Message = require("../models/message");
-var login_user = "";
+const async = require("async");
+//var login_user = "";
 
 exports.index = (req, res) => {
     res.render("index");
@@ -58,31 +59,40 @@ exports.logout = (req, res, next) => {
 };
 
 exports.chat = function (req, res, next) {
-    Message.find()
-        //.sort([["time","ascending"]])
-        .exec(function (err, list_Message) {
-            if (err) {
-                return next(err);
+    async.parallel({
+        list_Message(callback) {
+            if (req.user) {
+                console.log("loggg in as");
+                console.log(req.user.username);
             }
-            //Successful, so render
-            //TODO: use async to chain req.user.username
-            console.log("log in as");
-            console.log(req.user.username);
-            res.render("chat", {
-                User: req.user,
-                Message_list: list_Message,
-            });
+            Message.find()
+                //.sort([["time","ascending"]])
+                .exec(callback);
+        },
+    }, (err, results) => {
+        if (err) {
+            return next(err);
+        }
+        res.render("chat", {
+            User: req.user,
+            Message_list: results.list_Message,
         });
+    });
 };
 
 exports.chat_post = [
     body("message", "Message required").trim().escape(),
     (req, res, next) => {
         const errors = validationResult(req);
+        const date_ob = new Date();
+        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+        let date = ("0" + date_ob.getDate()).slice(-2);
+        let hours = date_ob.getHours();
+        let minutes = date_ob.getMinutes();
         const message = new Message({
-            owner: "todo",
+            owner: req.body.owner,
             content: req.body.message,
-            time: "todo"
+            time: (month + "/" + date + " " + hours + ":" + minutes)
         });
         if (!errors.isEmpty()) {
             res.render("chat", {

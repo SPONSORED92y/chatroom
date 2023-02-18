@@ -23,3 +23,11 @@ a {
   font-size: 22px;
   padding: 4px;
 }
+
+.speaker {
+  display: flex;
+}
+
+.time {
+  display: flex;
+}
