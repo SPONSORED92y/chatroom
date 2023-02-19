@@ -11,15 +11,21 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
 const User = require("./models/user");
+const helmet = require("helmet");
 
 //monogo connection
 mongoose.set('strictQuery', false);
-const mongoDb = "mongodb+srv://jasonsu92y:1234567890@cluster0.ewri6tw.mongodb.net/chatroom?retryWrites=true&w=majority";
+
+// Set up mongoose connection
+const dev_db_url =
+  "mongodb+srv://jasonsu92y:1234567890@cluster0.ewri6tw.mongodb.net/chatroom?retryWrites=true&w=majority";
+const mongoDb = process.env.MONGODB_URI || dev_db_url;
+
 mongoose.connect(mongoDb, { useUnifiedTopology: true, useNewUrlParser: true });
 
 var app = express();
 //passport
-
+app.use(helmet());
 passport.use(
   new LocalStrategy((username, password, done) => {
     User.findOne({ username: username }, (err, user) => {
